@@ -1,23 +1,22 @@
 import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-
-import { ECommerceComponent } from './e-commerce.component';
-import { CustomersComponent } from './customers/customers.component';
-import { ProductsComponent } from './products/products.component';
-import { ProductEditComponent } from './products/product-edit/product-edit.component';
+import { RouterModule, Routes } from '@angular/router';
+import { AccountSummaryComponent } from './account-summary/account-summary.component';
 import { CourtesyCardComponent } from './courtesy-card/courtesy-card.component';
-import { LotDetailsComponent } from './lot-details/lot-details.component';
-import { AccountSummaryComponent } from './account-summary/account-summary.component';  
-import { ViewPermitsComponent } from './view-permits/view-permits.component'; 
-import { IncomeReportComponent } from './income-report/income-report.component';
-import { TaxReportComponent } from './tax-report/tax-report.component';
-import { PaymentComponent } from './payment/payment.component';
-
-import { ManagepagesComponent } from './managepages/managepages.component';
-import { ManagepageEditComponent } from './managepages/managepage-edit/managepage-edit.component';
-import { FaqComponent } from './faq/faq.component';
-import { FaqEditComponent } from './faq/faq-edit/faq-edit.component';
+import { CustomersComponent } from './customers/customers.component';
+import { ECommerceComponent } from './e-commerce.component';
 import { FaqAddComponent } from './faq/faq-add/faq-add.component';
+import { FaqEditComponent } from './faq/faq-edit/faq-edit.component';
+import { FaqComponent } from './faq/faq.component';
+import { IncomeReportComponent } from './income-report/income-report.component';
+import { IvrsCredentialsComponent } from './ivrs-credentials/ivrs-credentials.component';
+import { LotDetailsComponent } from './lot-details/lot-details.component';
+import { ManagepageEditComponent } from './managepages/managepage-edit/managepage-edit.component';
+import { ManagepagesComponent } from './managepages/managepages.component';
+import { PaymentComponent } from './payment/payment.component';
+import { ProductEditComponent } from './products/product-edit/product-edit.component';
+import { ProductsComponent } from './products/products.component';
+import { TaxReportComponent } from './tax-report/tax-report.component';
+import { ViewPermitsComponent } from './view-permits/view-permits.component';
 
 const routes: Routes = [
   {
@@ -26,39 +25,39 @@ const routes: Routes = [
     children: [
       {
         path: 'customers',
-        component: CustomersComponent,
+        component: CustomersComponent
       },
       {
         path: 'courtesycard',
-        component: CourtesyCardComponent,
+        component: CourtesyCardComponent
       },
       {
         path: 'lotdetails',
-        component: LotDetailsComponent,
+        component: LotDetailsComponent
       },
       {
         path: 'accountsummary',
-        component: AccountSummaryComponent,
+        component: AccountSummaryComponent
       },
       {
         path: 'viewpermit',
-        component: ViewPermitsComponent,
+        component: ViewPermitsComponent
       },
       {
         path: 'incomereport',
-        component: IncomeReportComponent,
+        component: IncomeReportComponent
       },
       {
         path: 'taxeport',
-        component: TaxReportComponent,
+        component: TaxReportComponent
       },
       {
         path: 'payment',
-        component: PaymentComponent,
+        component: PaymentComponent
       },
       {
         path: 'managefaq',
-        component: FaqComponent,
+        component: FaqComponent
       },
       {
         path: 'managefaq/add',
@@ -72,10 +71,13 @@ const routes: Routes = [
         path: 'managefaq/edit/:id',
         component: FaqEditComponent
       },
-
+      {
+        path: 'ivrs',
+        component: IvrsCredentialsComponent
+      },
       {
         path: 'managepage',
-        component: ManagepagesComponent,
+        component: ManagepagesComponent
       },
       {
         path: 'managepage/add',
@@ -89,10 +91,10 @@ const routes: Routes = [
         path: 'managepage/edit/:id',
         component: ManagepageEditComponent
       },
-     
+
       {
         path: 'products',
-        component: ProductsComponent,
+        component: ProductsComponent
       },
       {
         path: 'product/add',
@@ -107,13 +109,13 @@ const routes: Routes = [
         component: ProductEditComponent
       },
       { path: '', redirectTo: 'customers', pathMatch: 'full' },
-      { path: '**', redirectTo: 'customers', pathMatch: 'full' },
-    ],
-  },
+      { path: '**', redirectTo: 'customers', pathMatch: 'full' }
+    ]
+  }
 ];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
-  exports: [RouterModule],
+  exports: [RouterModule]
 })
 export class ECommerceRoutingModule {}

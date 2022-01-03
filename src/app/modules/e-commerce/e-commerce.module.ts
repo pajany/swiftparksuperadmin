@@ -49,6 +49,9 @@ import { UpdateManagepagesStatusModalComponent } from './managepages/components/
 import { FaqComponent } from './faq/faq.component';
 import { FaqEditComponent } from './faq/faq-edit/faq-edit.component';
 import { FaqAddComponent } from './faq/faq-add/faq-add.component';
+import { IvrsCredentialsComponent } from './ivrs-credentials/ivrs-credentials.component';
+import { DeleteivrslotnumberComponent } from './ivrs-credentials/components/deleteivrslotnumber/deleteivrslotnumber.component';
+import { EditivrsComponent } from './ivrs-credentials/components/editivrs/editivrs.component';
 
    //import { EditSpecModalComponent } from './products/product-edit/specifications/edit-spec-modal/edit-spec-modal.component';
 
@@ -97,6 +100,9 @@ import { FaqAddComponent } from './faq/faq-add/faq-add.component';
     FaqComponent,
     FaqEditComponent,
     FaqAddComponent,
+    IvrsCredentialsComponent,
+    DeleteivrslotnumberComponent,
+    EditivrsComponent
     //EditSpecModalComponent,
   ],
   imports: [
@@ -133,6 +139,7 @@ import { FaqAddComponent } from './faq/faq-add/faq-add.component';
     FetchCourtesycardModalComponent,
     UpdateCourtesycardModalComponent,
     DeleteCourtesycardsModalComponent,
+    EditivrsComponent
   ]
 })
 export class ECommerceModule {}

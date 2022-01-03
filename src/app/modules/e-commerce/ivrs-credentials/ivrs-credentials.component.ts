@@ -1,4 +1,3 @@
-// tslint:disable:no-string-literal
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -17,18 +16,15 @@ import {
   PaginatorState,
   SortState
 } from '../../../_metronic/shared/crud-table';
-import { ManagePageService } from '../_services';
-import { DeleteManagepageModalComponent } from './components/delete-managepage-modal/delete-managepage-modal.component';
-import { DeleteManagepagesModalComponent } from './components/delete-managepages-modal/delete-managepages-modal.component';
-import { FetchManagepagesModalComponent } from './components/fetch-managepages-modal/fetch-managepages-modal.component';
-import { UpdateManagepagesStatusModalComponent } from './components/update-managepages-status-modal/update-managepages-status-modal.component';
-
+import { ivrsService } from '../_services';
+import { DeleteivrslotnumberComponent } from './components/deleteivrslotnumber/deleteivrslotnumber.component';
+import { EditivrsComponent } from './components/editivrs/editivrs.component';
 @Component({
-  selector: 'app-managepages',
-  templateUrl: './managepages.component.html',
-  styleUrls: ['./managepages.component.scss']
+  selector: 'app-ivrs-credentials',
+  templateUrl: './ivrs-credentials.component.html',
+  styleUrls: ['./ivrs-credentials.component.scss']
 })
-export class ManagepagesComponent
+export class IvrsCredentialsComponent
   implements
     OnInit,
     OnDestroy,
@@ -50,19 +46,18 @@ export class ManagepagesComponent
   searchGroup: FormGroup;
   private subscriptions: Subscription[] = []; // Read more: => https://brianflove.com/2016/12/11/anguar-2-unsubscribe-observables/
 
-  constructor(private fb: FormBuilder, private modalService: NgbModal, public managepageService: ManagePageService) {}
+  constructor(private fb: FormBuilder, private modalService: NgbModal, public ivrsService: ivrsService) {}
 
   // angular lifecircle hooks
   ngOnInit(): void {
     this.filterForm();
     this.searchForm();
-    this.managepageService.fetch();
-    const sb = this.managepageService.isLoading$.subscribe(res => (this.isLoading = res));
+    this.ivrsService.fetch();
+    const sb = this.ivrsService.isLoading$.subscribe(res => (this.isLoading = res));
     this.subscriptions.push(sb);
-    debugger;
-    this.grouping = this.managepageService.grouping;
-    this.paginator = this.managepageService.paginator;
-    this.sorting = this.managepageService.sorting;
+    this.grouping = this.ivrsService.grouping;
+    this.paginator = this.ivrsService.paginator;
+    this.sorting = this.ivrsService.sorting;
   }
 
   ngOnDestroy() {
@@ -91,7 +86,7 @@ export class ManagepagesComponent
     if (condition) {
       filter['condition'] = condition;
     }
-    this.managepageService.patchState({ filter });
+    this.ivrsService.patchState({ filter });
   }
 
   // search
@@ -113,7 +108,7 @@ export class ManagepagesComponent
   }
 
   search(searchTerm: string) {
-    this.managepageService.patchState({ searchTerm });
+    this.ivrsService.patchState({ searchTerm });
   }
 
   // sorting
@@ -126,46 +121,38 @@ export class ManagepagesComponent
     } else {
       sorting.direction = sorting.direction === 'asc' ? 'desc' : 'asc';
     }
-    this.managepageService.patchState({ sorting });
+    this.ivrsService.patchState({ sorting });
   }
 
   // pagination
   paginate(paginator: PaginatorState) {
-    this.managepageService.patchState({ paginator });
+    this.ivrsService.patchState({ paginator });
   }
   // actions
   delete(id: number) {
-    const modalRef = this.modalService.open(DeleteManagepageModalComponent);
+    const modalRef = this.modalService.open(DeleteivrslotnumberComponent);
     modalRef.componentInstance.id = id;
     modalRef.result.then(
-      () => this.managepageService.fetch(),
+      () => this.ivrsService.fetch(),
       () => {}
     );
   }
 
-  deleteSelected() {
-    const modalRef = this.modalService.open(DeleteManagepagesModalComponent);
-    modalRef.componentInstance.ids = this.grouping.getSelectedRows();
-    modalRef.result.then(
-      () => this.managepageService.fetch(),
-      () => {}
-    );
+  deleteSelected() {}
+
+  updateStatusForSelected() {}
+
+  fetchSelected() {}
+
+  create() {
+    this.edit(undefined);
   }
 
-  updateStatusForSelected() {
-    const modalRef = this.modalService.open(UpdateManagepagesStatusModalComponent);
-    modalRef.componentInstance.ids = this.grouping.getSelectedRows();
+  edit(id: number) {
+    const modalRef = this.modalService.open(EditivrsComponent, { size: 'xl' });
+    modalRef.componentInstance.id = id;
     modalRef.result.then(
-      () => this.managepageService.fetch(),
-      () => {}
-    );
-  }
-
-  fetchSelected() {
-    const modalRef = this.modalService.open(FetchManagepagesModalComponent);
-    modalRef.componentInstance.ids = this.grouping.getSelectedRows();
-    modalRef.result.then(
-      () => this.managepageService.fetch(),
+      () => this.ivrsService.fetch(),
       () => {}
     );
   }

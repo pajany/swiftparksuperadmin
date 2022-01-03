@@ -36,7 +36,6 @@ export class AsideComponent implements OnInit {
 
   ngOnInit(): void {
     // load view settings
-    debugger;
     // this.isAdminMenu = this.globalService.isAdminLoggedIn;
     let isloggedIn = this.storageConfiguration.sessionGetItem(this.storageConfiguration.menushow);
     if (isloggedIn === 'true') {

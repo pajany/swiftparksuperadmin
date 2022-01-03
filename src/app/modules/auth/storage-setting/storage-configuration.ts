@@ -23,12 +23,10 @@ export class StorageConfiguration {
     private authLocalStorageToken = `${environment.appVersion}-${environment.USERDATA_KEY}`;
 
     sessionSetItem(key, value) {
-        debugger;
         localStorage.setItem(this.encryptDecrypt.encrypt(key), this.encryptDecrypt.encrypt(value));
     }
 
     sessionGetItem(key) {
-        debugger;
         let decryptedValue = localStorage.getItem(this.encryptDecrypt.encrypt(key));
         return decryptedValue != null ? this.encryptDecrypt.decrypt(decryptedValue) : null;
     }
