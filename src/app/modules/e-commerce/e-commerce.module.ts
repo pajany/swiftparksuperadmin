@@ -52,7 +52,7 @@ import { FaqAddComponent } from './faq/faq-add/faq-add.component';
 import { IvrsCredentialsComponent } from './ivrs-credentials/ivrs-credentials.component';
 import { DeleteivrslotnumberComponent } from './ivrs-credentials/components/deleteivrslotnumber/deleteivrslotnumber.component';
 import { EditivrsComponent } from './ivrs-credentials/components/editivrs/editivrs.component';
-
+import { QuillModule } from 'ngx-quill';
    //import { EditSpecModalComponent } from './products/product-edit/specifications/edit-spec-modal/edit-spec-modal.component';
 
 @NgModule({
@@ -114,7 +114,8 @@ import { EditivrsComponent } from './ivrs-credentials/components/editivrs/editiv
     InlineSVGModule,
     CRUDTableModule,
     NgbModalModule,
-    NgbDatepickerModule
+    NgbDatepickerModule,
+    QuillModule.forRoot()
   ],
   entryComponents: [
     DeleteCustomerModalComponent,

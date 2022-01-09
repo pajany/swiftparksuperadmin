@@ -1,23 +1,23 @@
-import { Component,VERSION, Pipe,OnDestroy, OnInit,NO_ERRORS_SCHEMA,CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { FormBuilder,FormArray ,FormControl, FormGroup, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { Component, OnDestroy, OnInit, VERSION } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
+import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
+import { RxFormBuilder } from '@rxweb/reactive-form-validators';
+import * as $ from 'jquery';
 import { Observable, of, Subscription } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
-import { ManagePageService } from '../../_services';
 import { ManagePage } from '../../_models/managepage.model';
-import { RxwebValidators,RxFormBuilder } from "@rxweb/reactive-form-validators"
-import { HttpClient } from '@angular/common/http';
-import * as $ from 'jquery';
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic';
- 
+import { ManagePageService } from '../../_services';
+
 const EMP_PRODUCT: ManagePage = {
   id: undefined,
-  pheader:'',
-  ptitle:'',
-  page_content:'',
-  slug:'',
-  ch_main_menu:'',
-  main_menu_name:'',
+  pheader: '',
+  ptitle: '',
+  page_content: '',
+  slug: '',
+  ch_main_menu: '',
+  main_menu_name: ''
 };
 
 @Component({
@@ -25,16 +25,14 @@ const EMP_PRODUCT: ManagePage = {
   templateUrl: './managepage-edit.component.html',
   styleUrls: ['./managepage-edit.component.scss']
 })
- 
 export class ManagepageEditComponent implements OnInit, OnDestroy {
-
-   name = 'Angular ' + VERSION.major;
-   data: any = `<p>Hello, world!</p>`;
-   //public editor: ClassicEditor;
-   pagename="test paragraph";
-   public Editor = ClassicEditor;
-   mainmanushown: boolean = false ;
-   main_menu: boolean =false;
+  name = 'Angular ' + VERSION.major;
+  data: any = `<p>Hello, world!</p>`;
+  //public editor: ClassicEditor;
+  pagename = 'test paragraph';
+  public Editor = ClassicEditor;
+  mainmanushown: boolean = false;
+  main_menu: boolean = false;
 
   id: number;
   managepage: ManagePage;
@@ -42,7 +40,7 @@ export class ManagepageEditComponent implements OnInit, OnDestroy {
   formGroup: FormGroup;
   isLoading$: Observable<boolean>;
   errorMessage = '';
- 
+
   tabs = {
     BASIC_TAB: 0,
     REMARKS_TAB: 1,
@@ -50,8 +48,7 @@ export class ManagepageEditComponent implements OnInit, OnDestroy {
   };
   activeTabId = this.tabs.BASIC_TAB; // 0 => Basic info | 1 => Remarks | 2 => Specifications
   private subscriptions: Subscription[] = [];
-  public saveUsername:boolean;
- 
+  public saveUsername: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -59,65 +56,62 @@ export class ManagepageEditComponent implements OnInit, OnDestroy {
     private router: Router,
     private route: ActivatedRoute,
     private formBuilder: RxFormBuilder,
-    private http: HttpClient,
-   
-  ) { }
+    private http: HttpClient
+  ) {}
 
-  
   ngOnInit(): void {
     this.isLoading$ = this.managepageservice.isLoading$;
     this.loadProduct();
-    KTCkeditor.init(); 
-   
+    KTCkeditor.init();
   }
 
-  
-
   loadProduct() {
-    const sb = this.route.paramMap.pipe(
-      switchMap(params => {
-        // get id from URL
-        this.id = Number(params.get('id'));
-        if (this.id || this.id > 0) {
-          return this.managepageservice.getItemById(this.id);
+    const sb = this.route.paramMap
+      .pipe(
+        switchMap(params => {
+          // get id from URL
+          this.id = Number(params.get('id'));
+          if (this.id || this.id > 0) {
+            return this.managepageservice.getItemById(this.id);
+          }
+          return of(EMP_PRODUCT);
+        }),
+        catchError(errorMessage => {
+          this.errorMessage = errorMessage;
+          return of(undefined);
+        })
+      )
+      .subscribe((res: ManagePage) => {
+        if (!res) {
+          this.router.navigate(['/managepage'], { relativeTo: this.route });
         }
-        return of(EMP_PRODUCT);
-      }),
-      catchError((errorMessage) => {
-        this.errorMessage = errorMessage;
-        return of(undefined);
-      }),
-    ).subscribe((res: ManagePage) => {
-      if (!res) {
-        this.router.navigate(['/managepage'], { relativeTo: this.route });
-      }
-      console.log("edit data",res);
+        console.log('edit data', res);
 
-      if(res.ch_main_menu == 'true' || res.ch_main_menu =='1'){
-        this.main_menu= true;
-      }
+        if (res.ch_main_menu == 'true' || res.ch_main_menu == '1') {
+          this.main_menu = true;
+        }
 
-      this.managepage = res;
-      this.previous = Object.assign({}, res);
-      this.loadForm();
-    });
+        this.managepage = res;
+        this.previous = Object.assign({}, res);
+        this.loadForm();
+      });
     this.subscriptions.push(sb);
   }
 
-// this function remove all html tags in text
-extratHtmlTags(content) {
+  // this function remove all html tags in text
+  extratHtmlTags(content) {
     return content.replace(/<[^>]*>/g, '');
-}
-      
-    show_mainmanu($event){
-      this.mainmanushown  =  $event && $event.target && $event.target.checked;
-    }
+  }
+
+  show_mainmanu($event) {
+    this.mainmanushown = $event && $event.target && $event.target.checked;
+  }
 
   loadForm() {
     if (!this.managepage) {
       return;
     }
-     
+
     this.formGroup = this.fb.group({
       page_content: [this.managepage.page_content, Validators.required],
       pheader: [this.managepage.pheader, Validators.required],
@@ -136,60 +130,60 @@ extratHtmlTags(content) {
     this.loadForm();
   }
 
-   
   save() {
-    
     this.formGroup.markAllAsTouched();
     if (!this.formGroup.valid) {
-      return;	
+      return;
     }
-   
-    if($('textarea#editor').val() !=''){ 
 
-      this.formGroup.patchValue({
-        page_content:$('textarea#editor').val() 
-        
-      });
-    
+    if ($('textarea#editor').val() != '') {
+      debugger;
+     
+
       const formValues = this.formGroup.value;
-      console.log("get all values",formValues);
+      console.log('get all values', formValues);
 
       this.managepage = Object.assign(this.managepage, formValues);
       if (this.id) {
         this.edit();
-        setTimeout(function() { $("#msgupdate").show().fadeOut(3000); }, 1500);
-        
+        setTimeout(function () {
+          $('#msgupdate').show().fadeOut(3000);
+        }, 1500);
       } else {
         this.create();
-        setTimeout(function() { $("#msgadd").show().fadeOut(2500); }, 1500);
+        setTimeout(function () {
+          $('#msgadd').show().fadeOut(2500);
+        }, 1500);
       }
     }
-   
   }
 
-   edit() {
-     
-    const sbUpdate = this.managepageservice.update(this.managepage).pipe(
-      tap(() => this.router.navigate(['/superadmin/managepage'])),
-      catchError((errorMessage) => {
-        console.error('UPDATE ERROR', errorMessage);
-        return of(this.managepage);
-      })
-    ).subscribe(res => this.managepage = res);
-    
+  edit() {
+    const sbUpdate = this.managepageservice
+      .update(this.managepage)
+      .pipe(
+        tap(() => this.router.navigate(['/superadmin/managepage'])),
+        catchError(errorMessage => {
+          console.error('UPDATE ERROR', errorMessage);
+          return of(this.managepage);
+        })
+      )
+      .subscribe(res => (this.managepage = res));
+
     this.subscriptions.push(sbUpdate);
-    
   }
-  
+
   create() {
-    
-    const sbCreate = this.managepageservice.create(this.managepage).pipe(
-      tap(() => this.router.navigate(['/superadmin/managepage'])),
-      catchError((errorMessage) => {
-        console.error('UPDATE ERROR', errorMessage);
-        return of(this.managepage);
-      })
-    ).subscribe(res => this.managepage = res as ManagePage);
+    const sbCreate = this.managepageservice
+      .create(this.managepage)
+      .pipe(
+        tap(() => this.router.navigate(['/superadmin/managepage'])),
+        catchError(errorMessage => {
+          console.error('UPDATE ERROR', errorMessage);
+          return of(this.managepage);
+        })
+      )
+      .subscribe(res => (this.managepage = res as ManagePage));
     this.subscriptions.push(sbCreate);
   }
 
@@ -197,7 +191,6 @@ extratHtmlTags(content) {
     this.activeTabId = tabId;
   }
 
- 
   ngOnDestroy() {
     this.subscriptions.forEach(sb => sb.unsubscribe());
   }
@@ -222,42 +215,31 @@ extratHtmlTags(content) {
     const control = this.formGroup.controls[controlName];
     return control.dirty || control.touched;
   }
-
 }
 
-var KTCkeditor = function () {
+var KTCkeditor = (function () {
   // Private functions
 
   var demos = function () {
     var myEditor;
-      ClassicEditor
-          .create( document.querySelector( '#editor' ) )
-          .then( editor => {
-            myEditor = editor;  
-               
-          } )
-          .catch( error => {
-              //console.error( error );
-          } );
-  }
+    ClassicEditor.create(document.querySelector('#editor'))
+      .then(editor => {
+        myEditor = editor;
+      })
+      .catch(error => {
+        //console.error( error );
+      });
+  };
 
   return {
-      // public functions
-      init: function() {
-          demos();
-      }
+    // public functions
+    init: function () {
+      demos();
+    }
   };
-}();
+})();
 
- 
 // Initialization
-$(document).ready(function() {
-  KTCkeditor.init(); 
-  
+$(document).ready(function () {
+  KTCkeditor.init();
 });
- 
- 
-
-  
-
- 
